@@ -63,6 +63,11 @@ class BestPlayer extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * Formats the rows to show in the table command function
+     * @param $players
+     * @return array
+     */
     public static function getRowsFormatted($players) {
         $rows = [];
         foreach($players as $player) {

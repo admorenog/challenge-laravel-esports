@@ -17,6 +17,13 @@ class DataSourceCsv {
     const ERROR_FOLDER_NOT_FOUND = "Cannot find the folder %s";
     const ERROR_NO_CSV_FOUNDS = "Cannot find csv files in the folder %s";
 
+    /**
+     * Returns all CSV files in the requested folder
+     * @param string $folder
+     * @return array
+     * @throws GameCSVNotFoundException
+     * @throws GameFolderNotFoundException
+     */
     public static function getFilePaths(string $folder): array {
         if(!Storage::disk('local')->exists($folder)) {
             throw new GameFolderNotFoundException(sprintf(self::ERROR_FOLDER_NOT_FOUND, $folder));
@@ -32,6 +39,12 @@ class DataSourceCsv {
         return $filePaths;
     }
 
+    /**
+     * Returns the records splitted by EOL and CSV separator (;)
+     * @param string $filePath
+     * @return array
+     * @throws GameEmptyRecordException
+     */
     public static function getRecords(string $filePath): array {
         $content = Storage::disk('local')->get($filePath);
         $rawRecords = explode(self::FILE_CSV_EOL, rtrim($content));

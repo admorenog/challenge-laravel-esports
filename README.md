@@ -2,9 +2,9 @@
 This project is a challenge about eSports players
 
 ## Requeriments
-The project has been made in Laravel 8.67.0 (php ^7.3|^8.0).
+The project has been made in Laravel 8.67.0 (php ^7.3|^8.0) but I used things of php 8 so the requirements are:
 
-- php ^7.3|^8.0
+- php ^8.0
 - composer
 
 ## Installation

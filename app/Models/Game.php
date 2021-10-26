@@ -14,8 +14,14 @@ class Game
     const ERROR_TEAMS_SCORES_NOT_MATCH = "The teams scores doesn't match in %s, %s %s %s %s %s %s, %s %s %s %s %s %s";
 
     public ?string $name = null;
-    protected $players = [];
+    protected array $players = [];
 
+    /**
+     * Instantiate the players of the detected game and checks if the stats match and if the nick is unique in the game.
+     * @param string $filePath
+     * @throws GameDuplicatedNickException
+     * @throws GameTeamStatsMismatchException
+     */
     function __construct(string $filePath)
     {
         $records = $this->getRecords($filePath);
@@ -25,6 +31,11 @@ class Game
         $this->checkStatsMatch();
     }
 
+    /**
+     * Returns a list of players ordered by their score
+     * @param string|null $folder
+     * @return array
+     */
     public static function getPlayersOrderedByScores(?string $folder = null) : array
     {
         $players = self::getPlayersWithScores($folder);
@@ -34,8 +45,16 @@ class Game
         return $players;
     }
 
+    /**
+     * Returns a list of players with their scores
+     * @param string|null $folder
+     * @return array
+     */
     public static function getPlayersWithScores(?string $folder = null) : array
     {
+        /**
+         * @var Game[]
+         */
         $gamesWithPlayers = Game::get($folder);
 
         $players = [];
@@ -58,7 +77,15 @@ class Game
         return $players;
     }
 
-    public static function get(?string $folder = 'rankings_good')
+    /**
+     * Returns an array with instances of Games with players of this game.
+     *
+     * @param string|null $folder
+     * @return array
+     * @throws \App\Exceptions\GameCSVNotFoundException
+     * @throws \App\Exceptions\GameFolderNotFoundException
+     */
+    public static function get(?string $folder = 'rankings_good') : array
     {
         $filePaths = DataSourceCsv::getFilePaths($folder);
         $games = [];
@@ -70,18 +97,36 @@ class Game
         return $games;
     }
 
+    /**
+     * Connects to the custom csv file reader and returns the records.
+     * @param string $filePath
+     * @return array
+     * @throws \App\Exceptions\GameEmptyRecordException
+     */
     private function getRecords(string $filePath) : array
     {
         $records = DataSourceCsv::getRecords($filePath);
         return $records;
     }
 
+    /**
+     * Returns the game name retrieved by the first line of the csv file
+     * @param array $records
+     * @return string
+     */
     private function getGameName(array &$records) : string
     {
         $gameNameRecord = array_shift($records);
         return $gameNameRecord[self::FIELD_GAME_NAME];
     }
 
+    /**
+     * Return the list of players instantiated by the game name and the records retrieved by the csv file
+     * @param array $records
+     * @return array
+     * @throws GameDuplicatedNickException
+     * @throws \App\Exceptions\GameNotRegisteredException
+     */
     private function getPlayers(array $records) : array
     {
         $players = [];
@@ -97,6 +142,11 @@ class Game
         return $players;
     }
 
+    /**
+     * Validates if the Team A and Team B scores match, kills of Team A should match with deaths of Team B,
+     * and otherwise
+     * @throws GameTeamStatsMismatchException
+     */
     private function checkStatsMatch() : void
     {
         $teamsStats = [];
@@ -124,6 +174,10 @@ class Game
         }
     }
 
+    /**
+     * returns the array list of every player with its score.
+     * @return array
+     */
     public function getScores() : array
     {
         $scores = [];

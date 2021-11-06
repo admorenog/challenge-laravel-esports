@@ -6,10 +6,13 @@ use App\Exceptions\GameCSVNotFoundException;
 use App\Exceptions\GameDuplicatedNickException;
 use App\Exceptions\GameEmptyRecordException;
 use App\Exceptions\GameFieldsMismatchException;
+use App\Exceptions\GameFolderNotFoundException;
+use App\Exceptions\GameNotRegisteredException;
 use App\Exceptions\GameTeamStatsMismatchException;
 
 use Exception;
 use App\Models\Game;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Tests\TestCase;
 
 
@@ -43,6 +46,15 @@ class GameTest extends TestCase
         }
     }
 
+    /**
+     * @throws GameEmptyRecordException
+     * @throws FileNotFoundException
+     * @throws GameFolderNotFoundException
+     * @throws GameCSVNotFoundException
+     * @throws GameDuplicatedNickException
+     * @throws GameNotRegisteredException
+     * @throws GameTeamStatsMismatchException
+     */
     public function testFinalResult()
     {
         $scores = Game::getPlayersOrderedByScores("rankings_good");

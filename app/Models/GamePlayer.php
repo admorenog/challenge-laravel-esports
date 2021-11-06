@@ -3,16 +3,14 @@
 namespace App\Models;
 
 use App\Exceptions\GameFieldsMismatchException;
-use ValueError;
+use ErrorException;
 
 abstract class GamePlayer
 {
-    const ERROR_FIELDS_MISMATCH = "Processing %s file there was an error\n a record doesn't have the required fields: the game has %s field names and the record has %s fields \n%s\n%s";
-
     protected array $fields = [];
 
     /**
-     * Matchs the record fields with the field names provided in $this->fieldNames protected property.
+     * Matches the record fields with the field names provided in $this->fieldNames protected property.
      * @param $record
      * @throws GameFieldsMismatchException
      */
@@ -21,9 +19,8 @@ abstract class GamePlayer
         try {
             $this->fields = array_combine($this->fieldNames, $record);
         }
-        catch(ValueError) {
-            throw new GameFieldsMismatchException(sprintf(self::ERROR_FIELDS_MISMATCH,
-                $this->name, count($this->fieldNames), count($record), json_encode($this->fieldNames), json_encode($record)));
+        catch(ErrorException $ex) {
+            throw new GameFieldsMismatchException($this->name, $this->fieldNames, $record);
         }
     }
 
@@ -84,7 +81,7 @@ abstract class GamePlayer
     }
 
     /**
-     * The main function that every subclass should implements to calc the score.
+     * The main function that every subclass should implement to calc the score.
      * @return float
      */
     function getScore() : float

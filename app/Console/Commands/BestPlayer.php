@@ -2,9 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Game;
-use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Symfony\Component\Console\Output\OutputInterface;
+
+use Exception;
+use App\Exceptions\GameCSVNotFoundException;
+use App\Exceptions\GameDuplicatedNickException;
+use App\Exceptions\GameEmptyRecordException;
+use App\Exceptions\GameFolderNotFoundException;
+use App\Exceptions\GameNotRegisteredException;
+use App\Exceptions\GameTeamStatsMismatchException;
+
+use App\Models\Game;
 
 class BestPlayer extends Command
 {
@@ -37,13 +47,20 @@ class BestPlayer extends Command
      * Execute the console command.
      *
      * @return int
+     * @throws GameCSVNotFoundException
+     * @throws GameDuplicatedNickException
+     * @throws GameEmptyRecordException
+     * @throws GameFolderNotFoundException
+     * @throws GameNotRegisteredException
+     * @throws GameTeamStatsMismatchException
+     * @throws FileNotFoundException
      */
-    public function handle()
+    public function handle(): int
     {
         $folder = $this->argument("folder");
         try {
             $players = Game::getPlayersOrderedByScores($folder);
-            $bestPlayer = array_shift($players);
+            $bestPlayer = reset($players);
 
             if(app()->isLocal()) {
                 $this->info("-- RANKING --");
@@ -57,6 +74,11 @@ class BestPlayer extends Command
         }
         catch(Exception $ex) {
             $this->error($ex->getMessage());
+
+            $verbosityLevel = $this->getOutput()->getVerbosity();
+            if($verbosityLevel >= OutputInterface::VERBOSITY_DEBUG) {
+                throw $ex;
+            }
             return Command::FAILURE;
         }
 
@@ -68,7 +90,8 @@ class BestPlayer extends Command
      * @param $players
      * @return array
      */
-    public static function getRowsFormatted($players) {
+    public static function getRowsFormatted($players): array
+    {
         $rows = [];
         foreach($players as $player) {
             $gameScores = array_column($player["games"], "score", "game");

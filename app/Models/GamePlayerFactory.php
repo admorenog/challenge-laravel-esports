@@ -11,7 +11,7 @@ class GamePlayerFactory
     /**
      * @var string[] the Class mapping for every game, this can be used to instantiate just by a text
      */
-    private static $gamePlayerModels = [
+    private static array $gamePlayerModels = [
         "LEAGUE OF LEGENDS" => LeagueOfLegends::class,
         "VALORANT" => Valorant::class,
     ];
@@ -30,7 +30,7 @@ class GamePlayerFactory
             $gamePlayer->name = $gameName;
         }
         else {
-            throw new GameNotRegisteredException(sprintf("Cannot find %s game, maybe its not registered.", $gameName));
+            throw new GameNotRegisteredException($gameName);
         }
 
         return $gamePlayer;

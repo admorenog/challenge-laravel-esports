@@ -5,6 +5,7 @@ namespace App\Models\Game;
 use App\Exceptions\GameCSVNotFoundException;
 use App\Exceptions\GameEmptyRecordException;
 use App\Exceptions\GameFolderNotFoundException;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 
 class DataSourceCsv {
@@ -13,20 +14,16 @@ class DataSourceCsv {
     const FILE_CVS_SEPARATOR = ";";
     const FILE_CSV_EXTENSION = '/\.csv$/i';
 
-    const ERROR_EMPTY_RECORD = "In the file %s, the record %s is empty.";
-    const ERROR_FOLDER_NOT_FOUND = "Cannot find the folder %s";
-    const ERROR_NO_CSV_FOUNDS = "Cannot find csv files in the folder %s";
-
     /**
      * Returns all CSV files in the requested folder
      * @param string $folder
-     * @return array
+     * @return string[]
      * @throws GameCSVNotFoundException
      * @throws GameFolderNotFoundException
      */
     public static function getFilePaths(string $folder): array {
         if(!Storage::disk('local')->exists($folder)) {
-            throw new GameFolderNotFoundException(sprintf(self::ERROR_FOLDER_NOT_FOUND, $folder));
+            throw new GameFolderNotFoundException($folder);
         }
 
         $filePaths = Storage::disk('local')->files($folder);
@@ -34,16 +31,17 @@ class DataSourceCsv {
         $filePaths = preg_grep(self::FILE_CSV_EXTENSION, $filePaths);
 
         if(count($filePaths) == 0) {
-            throw new GameCSVNotFoundException(sprintf(self::ERROR_NO_CSV_FOUNDS, $folder));
+            throw new GameCSVNotFoundException($folder);
         }
         return $filePaths;
     }
 
     /**
-     * Returns the records splitted by EOL and CSV separator (;)
+     * Returns the records split by EOL and CSV separator (;)
      * @param string $filePath
      * @return array
      * @throws GameEmptyRecordException
+     * @throws FileNotFoundException
      */
     public static function getRecords(string $filePath): array {
         $content = Storage::disk('local')->get($filePath);
@@ -52,7 +50,7 @@ class DataSourceCsv {
             return $rawRecord == "";
         });
         if(count($emptyRecords) > 0) {
-            throw new GameEmptyRecordException(sprintf(self::ERROR_EMPTY_RECORD, $filePath, array_key_first($emptyRecords)));
+            throw new GameEmptyRecordException($filePath, $emptyRecords);
         }
         $records = array_map(function($rawRecord) {
             return explode(self::FILE_CVS_SEPARATOR, $rawRecord);

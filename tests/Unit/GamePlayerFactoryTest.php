@@ -17,6 +17,7 @@ class GamePlayerFactoryTest extends TestCase
      * Testing the player factory (game matching and field assign)
      *
      * @return void
+     * @throws GameNotRegisteredException
      */
     public function testGamePlayerFactoryLeagueOfLegends()
     {
@@ -30,6 +31,7 @@ class GamePlayerFactoryTest extends TestCase
      * Testing the player factory (game matching and field assign)
      *
      * @return void
+     * @throws GameNotRegisteredException
      */
     public function testGamePlayerFactoryValorant()
     {
@@ -72,6 +74,7 @@ class GamePlayerFactoryTest extends TestCase
             $this->assertInstanceOf(GameFieldsMismatchException::class, $ex);
         }
     }
+
     /**
      * Testing the player factory (game matching and field assign)
      *

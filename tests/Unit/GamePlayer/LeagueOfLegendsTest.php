@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\GamePlayer;
 
+use App\Exceptions\GameFieldsMismatchException;
 use App\Models\GamePlayer\LeagueOfLegends;
 use Tests\TestCase;
 
@@ -9,6 +10,9 @@ use Tests\TestCase;
 class LeagueOfLegendsTest extends TestCase
 {
 
+    /**
+     * @throws GameFieldsMismatchException
+     */
     public function testDocScoreIsWrong(): void
     {
         /**
@@ -33,7 +37,10 @@ class LeagueOfLegendsTest extends TestCase
         $this->assertNotEquals($ratingPointsFromDoc, $exampleWrong->getScore());
     }
 
-    public function testDocScoreWithCalcs(): void
+    /**
+     * @throws GameFieldsMismatchException
+     */
+    public function testDocScoreWithCalculations(): void
     {
         /**
          * E.g. a player playing as a Mid with 10 kills, 5 deaths and no assists will be granted with 2 KDA points ((10 + 0) / 5 ).
@@ -59,6 +66,9 @@ class LeagueOfLegendsTest extends TestCase
         $this->assertEquals($ratingPointsCalcFromDoc, $exampleRight->getScore());
     }
 
+    /**
+     * @throws GameFieldsMismatchException
+     */
     public function testScoreNoDeaths(): void
     {
         /**
@@ -80,10 +90,13 @@ class LeagueOfLegendsTest extends TestCase
 
         $exampleRight = new LeagueOfLegends($fields);
 
-        $ratingPointsNodeaths = 0;
-        $this->assertEquals($ratingPointsNodeaths, $exampleRight->getScore());
+        $ratingPointsNoDeaths = 0;
+        $this->assertEquals($ratingPointsNoDeaths, $exampleRight->getScore());
     }
 
+    /**
+     * @throws GameFieldsMismatchException
+     */
     public function testScoreCalcTeamWinner(): void
     {
         /**

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\GamePlayer;
 
+use App\Exceptions\GameFieldsMismatchException;
 use App\Models\GamePlayer\Valorant;
 use Tests\TestCase;
 
@@ -9,6 +10,9 @@ use Tests\TestCase;
 class ValorantTest extends TestCase
 {
 
+    /**
+     * @throws GameFieldsMismatchException
+     */
     public function testScoreCalc(): void
     {
         $fields = [
@@ -25,6 +29,9 @@ class ValorantTest extends TestCase
         $this->assertEquals($ratingPoints, $exampleWrong->getScore());
     }
 
+    /**
+     * @throws GameFieldsMismatchException
+     */
     public function testScoreCalcTeamWinner(): void
     {
         $fields = [
@@ -41,6 +48,9 @@ class ValorantTest extends TestCase
         $this->assertEquals($ratingPoints, $exampleWrong->getScore());
     }
 
+    /**
+     * @throws GameFieldsMismatchException
+     */
     public function testWrongDeaths(): void
     {
         $fields = [

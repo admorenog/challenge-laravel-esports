@@ -1,0 +1,7 @@
+docker exec -it docker-mysql-server-1 bash
+mysql -uroot -psecret
+create database streamink
+
+docker exec -it docker-web-server-1 bash
+php artisan migrate
+php artisan db:seed

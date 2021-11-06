@@ -19,7 +19,7 @@ class LeagueOfLegends extends GamePlayer
         'S' => [0.01, 0.03],
     ];
 
-    protected $fieldNames = [
+    protected array $fieldNames = [
         "player name",
         "nickname",
         "team name",

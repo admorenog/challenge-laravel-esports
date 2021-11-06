@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use App\Exceptions\GameCSVNotFoundException;
 use App\Exceptions\GameDuplicatedNickException;
+use App\Exceptions\GameEmptyRecordException;
+use App\Exceptions\GameFolderNotFoundException;
+use App\Exceptions\GameNotRegisteredException;
 use App\Exceptions\GameTeamStatsMismatchException;
 use App\Models\Game\DataSourceCsv;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class Game
 {
     const FIELD_GAME_NAME = 0;
-
-    const ERROR_NICK_DUPLICATED = "The %s nickname is not unique in %s file";
-    const ERROR_TEAMS_SCORES_NOT_MATCH = "The teams scores doesn't match in %s, %s %s %s %s %s %s, %s %s %s %s %s %s";
 
     public ?string $name = null;
     protected array $players = [];
@@ -19,7 +21,10 @@ class Game
     /**
      * Instantiate the players of the detected game and checks if the stats match and if the nick is unique in the game.
      * @param string $filePath
+     * @throws FileNotFoundException
      * @throws GameDuplicatedNickException
+     * @throws GameEmptyRecordException
+     * @throws GameNotRegisteredException
      * @throws GameTeamStatsMismatchException
      */
     function __construct(string $filePath)
@@ -35,6 +40,13 @@ class Game
      * Returns a list of players ordered by their score
      * @param string|null $folder
      * @return array
+     * @throws FileNotFoundException
+     * @throws GameCSVNotFoundException
+     * @throws GameDuplicatedNickException
+     * @throws GameEmptyRecordException
+     * @throws GameFolderNotFoundException
+     * @throws GameNotRegisteredException
+     * @throws GameTeamStatsMismatchException
      */
     public static function getPlayersOrderedByScores(?string $folder = null) : array
     {
@@ -49,12 +61,16 @@ class Game
      * Returns a list of players with their scores
      * @param string|null $folder
      * @return array
+     * @throws FileNotFoundException
+     * @throws GameCSVNotFoundException
+     * @throws GameDuplicatedNickException
+     * @throws GameEmptyRecordException
+     * @throws GameFolderNotFoundException
+     * @throws GameNotRegisteredException
+     * @throws GameTeamStatsMismatchException
      */
     public static function getPlayersWithScores(?string $folder = null) : array
     {
-        /**
-         * @var Game[]
-         */
         $gamesWithPlayers = Game::get($folder);
 
         $players = [];
@@ -81,9 +97,14 @@ class Game
      * Returns an array with instances of Games with players of this game.
      *
      * @param string|null $folder
-     * @return array
-     * @throws \App\Exceptions\GameCSVNotFoundException
-     * @throws \App\Exceptions\GameFolderNotFoundException
+     * @return Game[]
+     * @throws FileNotFoundException
+     * @throws GameCSVNotFoundException
+     * @throws GameDuplicatedNickException
+     * @throws GameEmptyRecordException
+     * @throws GameFolderNotFoundException
+     * @throws GameNotRegisteredException
+     * @throws GameTeamStatsMismatchException
      */
     public static function get(?string $folder = 'rankings_good') : array
     {
@@ -101,12 +122,12 @@ class Game
      * Connects to the custom csv file reader and returns the records.
      * @param string $filePath
      * @return array
-     * @throws \App\Exceptions\GameEmptyRecordException
+     * @throws GameEmptyRecordException
+     * @throws FileNotFoundException
      */
     private function getRecords(string $filePath) : array
     {
-        $records = DataSourceCsv::getRecords($filePath);
-        return $records;
+        return DataSourceCsv::getRecords($filePath);
     }
 
     /**
@@ -125,7 +146,7 @@ class Game
      * @param array $records
      * @return array
      * @throws GameDuplicatedNickException
-     * @throws \App\Exceptions\GameNotRegisteredException
+     * @throws GameNotRegisteredException
      */
     private function getPlayers(array $records) : array
     {
@@ -135,7 +156,7 @@ class Game
             $player = GamePlayerFactory::create($this->name, $record);
 
             if(in_array($player->getNickname(), array_keys($players))) {
-                throw new GameDuplicatedNickException(sprintf(self::ERROR_NICK_DUPLICATED, $player->getNickname(), $this->name));
+                throw new GameDuplicatedNickException($player->getNickname(), $this->name);
             }
             $players[$player->getNickname()] = $player;
         }
@@ -164,13 +185,7 @@ class Game
         if($teamsStats[0]['kills'] != $teamsStats[1]['deaths']
         || $teamsStats[1]['kills'] != $teamsStats[0]['deaths'])
         {
-            throw new GameTeamStatsMismatchException(sprintf(self::ERROR_TEAMS_SCORES_NOT_MATCH,
-                $this->name,
-                $teamsStats[0]['team'], 'kills', $teamsStats[0]['kills'],
-                $teamsStats[1]['team'], 'deaths', $teamsStats[1]['deaths'],
-                $teamsStats[1]['team'], 'kills', $teamsStats[1]['kills'],
-                $teamsStats[0]['team'], 'deaths', $teamsStats[0]['deaths']
-            ));
+            throw new GameTeamStatsMismatchException($this->name, $teamsStats);
         }
     }
 

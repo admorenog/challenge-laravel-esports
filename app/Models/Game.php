@@ -185,7 +185,7 @@ class Game
         if($teamsStats[0]['kills'] != $teamsStats[1]['deaths']
         || $teamsStats[1]['kills'] != $teamsStats[0]['deaths'])
         {
-            throw new GameTeamStatsMismatchException($this->name, $teamsStats);
+            throw new GameTeamStatsMismatchException($this->name, $teamsStats[0], $teamsStats[1]);
         }
     }
 

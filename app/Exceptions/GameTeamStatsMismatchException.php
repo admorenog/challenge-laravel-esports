@@ -7,17 +7,22 @@ use Throwable;
 
 class GameTeamStatsMismatchException extends Exception
 {
-    const ERROR_TEAMS_SCORES_NOT_MATCH = "The teams scores doesn't match in %s, %s %s %s %s %s %s, %s %s %s %s %s %s";
+    const ERROR_TEAMS_SCORES_NOT_MATCH = "errors.game.stats_mismatch";
 
-    public function __construct($file, $stats, $code = 0, Throwable $previous = null)
+    public function __construct($file, $aTeamStats, $bTeamStats, $code = 0, Throwable $previous = null)
     {
-        $message = sprintf(self::ERROR_TEAMS_SCORES_NOT_MATCH,
-            $file,
-            $stats[0]['team'], 'kills', $stats[0]['kills'],
-            $stats[1]['team'], 'deaths', $stats[1]['deaths'],
-            $stats[1]['team'], 'kills', $stats[1]['kills'],
-            $stats[0]['team'], 'deaths', $stats[0]['deaths']
-        );
+        $message = trans(self::ERROR_TEAMS_SCORES_NOT_MATCH, [
+            'file' => $file,
+
+            'team_a' => $aTeamStats['team'],
+            'team_a_kills' => $aTeamStats['kills'],
+            'team_a_deaths' => $aTeamStats['deaths'],
+
+            'team_b' => $bTeamStats['team'],
+            'team_b_kills' => $bTeamStats['kills'],
+            'team_b_deaths' => $bTeamStats['deaths']
+        ]);
+
         parent::__construct($message, $code, $previous);
     }
 

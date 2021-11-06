@@ -7,11 +7,11 @@ use Throwable;
 
 class GameFolderNotFoundException extends Exception
 {
+    const ERROR_FOLDER_NOT_FOUND = "errors.game.folder_not_found";
 
-    const ERROR_FOLDER_NOT_FOUND = "Cannot find the folder %s";
-    public function __construct($folder = "", $code = 0, Throwable $previous = null)
+    public function __construct($folder, $code = 0, Throwable $previous = null)
     {
-        $message = sprintf(self::ERROR_FOLDER_NOT_FOUND, $folder);
+        $message = trans(self::ERROR_FOLDER_NOT_FOUND, ['folder' => $folder]);
         parent::__construct($message, $code, $previous);
     }
 }

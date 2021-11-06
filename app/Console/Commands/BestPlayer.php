@@ -23,7 +23,7 @@ class BestPlayer extends Command
      *
      * @var string
      */
-    protected $signature = 'challenge:best_player
+    protected $signature = 'best_player
         {folder=rankings_good : The possible values are: rankings_good, rankings_lol_fixed, rankings_valorant_field_fixed, rankings_valorant_field_rows_fixed and rankings_kills_death_fail}';
 
     /**

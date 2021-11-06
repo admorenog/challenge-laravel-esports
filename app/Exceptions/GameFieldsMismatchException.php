@@ -7,13 +7,18 @@ use Throwable;
 
 class GameFieldsMismatchException extends Exception
 {
-    const ERROR_FIELDS_MISMATCH = "Processing %s file there was an error\n a record doesn't have the required fields: the game has %s field names and the record has %s fields \n%s\n%s";
+    const ERROR_FIELDS_MISMATCH = "errors.game.fields_mismatch";
 
-    public function __construct($gameName, $fieldNames, $record, $code = 0, Throwable $previous = null)
+    public function __construct($gameName, $fieldNames, $fields, $code = 0, Throwable $previous = null)
     {
-        $message = sprintf(self::ERROR_FIELDS_MISMATCH,
-            $gameName, count($fieldNames), count($record), json_encode($fieldNames), json_encode($record)
-        );
+        $message = trans(self::ERROR_FIELDS_MISMATCH, [
+            'game' => $gameName,
+            'count_fieldNames' => count($fieldNames),
+            'count_fields' => count($fields),
+            'fieldNames' => json_encode($fieldNames),
+            'fields' => json_encode($fields)
+        ]);
+
         parent::__construct($message, $code, $previous);
     }
 }

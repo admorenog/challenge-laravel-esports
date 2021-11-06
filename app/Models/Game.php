@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Exceptions\GameCSVNotFoundException;
-use App\Exceptions\GameDuplicatedNickException;
-use App\Exceptions\GameEmptyRecordException;
-use App\Exceptions\GameFolderNotFoundException;
-use App\Exceptions\GameNotRegisteredException;
-use App\Exceptions\GameTeamStatsMismatchException;
+use App\Exceptions\Game\GameCSVNotFoundException;
+use App\Exceptions\Game\GameDuplicatedNickException;
+use App\Exceptions\Game\GameEmptyRecordException;
+use App\Exceptions\Game\GameFolderNotFoundException;
+use App\Exceptions\Game\GameNotRegisteredException;
+use App\Exceptions\Game\GameTeamStatsMismatchException;
 use App\Models\Game\DataSourceCsv;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 

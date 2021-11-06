@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Exceptions\GameNotRegisteredException;
+use App\Exceptions\Game\GameNotRegisteredException;
 use App\Models\GamePlayer\LeagueOfLegends;
 use App\Models\GamePlayer\Valorant;
 

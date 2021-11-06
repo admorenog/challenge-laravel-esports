@@ -8,17 +8,6 @@ class LeagueOfLegends extends GamePlayer
 {
     public ?string $name = "League Of Legends";
 
-    const MODIFIER_DAMAGE_DEAL_POS = 0;
-    const MODIFIER_HEAL_DEAL_POS = 1;
-
-    protected array $ratingModifiersByPos = [
-        'T' => [0.03, 0.01],
-        'B' => [0.03, 0.01],
-        'M' => [0.03, 0.01],
-        'J' => [0.02, 0.02],
-        'S' => [0.01, 0.03],
-    ];
-
     protected array $fieldNames = [
         "player name",
         "nickname",
@@ -30,6 +19,18 @@ class LeagueOfLegends extends GamePlayer
         "assists",
         "damage deal",
         "heal deal"
+    ];
+
+
+    const MODIFIER_DAMAGE_DEAL_POS = 0;
+    const MODIFIER_HEAL_DEAL_POS = 1;
+
+    protected array $ratingModifiersByPos = [
+        'T' => [0.03, 0.01],
+        'B' => [0.03, 0.01],
+        'M' => [0.03, 0.01],
+        'J' => [0.02, 0.02],
+        'S' => [0.01, 0.03],
     ];
 
     private function getAssists() : int

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\Exceptions\Game;
 
 use Exception;
 use Throwable;

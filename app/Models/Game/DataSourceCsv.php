@@ -2,9 +2,9 @@
 
 namespace App\Models\Game;
 
-use App\Exceptions\GameCSVNotFoundException;
-use App\Exceptions\GameEmptyRecordException;
-use App\Exceptions\GameFolderNotFoundException;
+use App\Exceptions\Game\GameCSVNotFoundException;
+use App\Exceptions\Game\GameEmptyRecordException;
+use App\Exceptions\Game\GameFolderNotFoundException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Storage;
 

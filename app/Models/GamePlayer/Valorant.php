@@ -7,6 +7,7 @@ use App\Models\GamePlayer;
 class Valorant extends GamePlayer
 {
     public ?string $name = "VALORANT";
+
     protected array $fieldNames = [
         "player name",
         "nickname",

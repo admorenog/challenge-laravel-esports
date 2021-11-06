@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use App\Exceptions\GameFieldsMismatchException;
+use App\Exceptions\Game\GameFieldsMismatchException;
 use ErrorException;
 
 abstract class GamePlayer
 {
+    public ?string $name = null;
+    protected array $fieldNames = [];
     protected array $fields = [];
 
     /**
